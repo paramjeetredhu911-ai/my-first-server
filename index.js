@@ -39,6 +39,30 @@ app.get("/api/users", async (req, res) => {
 app.get("/", (req, res) => {
   res.json({ message: "Day 4 CRUD Server Running" });
 });
+// Step v: Search Products by Keyword (Must be ABOVE the :id route)
+app.get('/products/search', (req, res) => {
+    const keyword = req.query.keyword ? req.query.keyword.toLowerCase() : "";
+    const filteredProducts = products.filter(p => p.name.toLowerCase().includes(keyword));
+    res.json(filteredProducts);
+});
+
+// Step iii: Get Product by ID
+app.get('/products/:id', (req, res) => {
+    const productId = req.params.id;
+    const product = products.find(p => p.id == productId);
+    
+    if (!product) {
+        return res.status(404).json({ message: "Product not found" });
+    }
+    res.json(product);
+});
+
+// Step iv: Add a New Product
+app.post('/products', (req, res) => {
+    const newProduct = req.body;
+    products.push(newProduct);
+    res.status(201).json({ message: "Product added successfully", product: newProduct });
+});
 
 // 4. Connect to MongoDB and Start Server
 mongoose
